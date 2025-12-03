@@ -1,0 +1,21 @@
+<Project Sdk="WixToolset.Sdk/5.0.0">
+  <PropertyGroup>
+    <OutputType>Package</OutputType>
+    <ProductName>PageCounter Pro</ProductName>
+    <ProductVersion>1.0.0</ProductVersion>
+    <ProductLanguage>1033</ProductLanguage>
+    <Manufacturer>Badgey</Manufacturer>
+    <UpgradeCode>E4B7C8F1-2A3D-4E5F-9B7C-8D9E0F1A2B3C</UpgradeCode>
+    <InstallerPlatform>x64</InstallerPlatform>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\PageCounterPro.UI\PageCounterPro.UI.csproj">
+      <PublishDir>$(OutputPath)publish\</PublishDir>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

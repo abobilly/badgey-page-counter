@@ -1,0 +1,15 @@
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\bin\Release\net8.0-windows\PageCounterPro.Infrastructure.deps.json
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\bin\Release\net8.0-windows\PageCounterPro.Infrastructure.dll
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\bin\Release\net8.0-windows\PageCounterPro.Infrastructure.pdb
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\bin\Release\net8.0-windows\PageCounterPro.Core.dll
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\bin\Release\net8.0-windows\PageCounterPro.Core.pdb
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\obj\Release\net8.0-windows\PageCounterPro.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\obj\Release\net8.0-windows\PageCounterPro.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\obj\Release\net8.0-windows\PageCounterPro.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\obj\Release\net8.0-windows\PageCounterPro.Infrastructure.AssemblyInfo.cs
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\obj\Release\net8.0-windows\PageCounterPro.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\obj\Release\net8.0-windows\PageCoun.33AE95CA.Up2Date
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\obj\Release\net8.0-windows\PageCounterPro.Infrastructure.dll
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\obj\Release\net8.0-windows\refint\PageCounterPro.Infrastructure.dll
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\obj\Release\net8.0-windows\PageCounterPro.Infrastructure.pdb
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\obj\Release\net8.0-windows\ref\PageCounterPro.Infrastructure.dll

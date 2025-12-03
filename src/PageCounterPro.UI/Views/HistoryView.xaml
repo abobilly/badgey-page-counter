@@ -1,0 +1,142 @@
+<UserControl x:Class="PageCounterPro.UI.Views.HistoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PageCounterPro.UI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800"
+             Background="{StaticResource BackgroundBrush}">
+    
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+    </UserControl.Resources>
+    
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Scan History" Style="{StaticResource HeaderLabelStyle}"/>
+                <TextBlock Text="View and manage your previous scan results."
+                           Style="{StaticResource BodyLabelStyle}"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Content="Refresh"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Command="{Binding RefreshHistoryCommand}"
+                        Margin="0,0,8,0"/>
+                
+                <Button Content="Clear All"
+                        Style="{StaticResource DangerButtonStyle}"
+                        Command="{Binding ClearAllHistoryCommand}"
+                        IsEnabled="{Binding HasEntries}"/>
+            </StackPanel>
+        </Grid>
+        
+        <!-- Action Buttons for Selected Item -->
+        <Border Grid.Row="1" 
+                Style="{StaticResource CardStyle}" 
+                Margin="0,0,0,16"
+                Visibility="{Binding SelectedEntry, Converter={StaticResource NullToVisibilityConverter}}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="{Binding SelectedEntry.FolderName}"
+                               FontWeight="SemiBold"
+                               FontSize="14"/>
+                    <TextBlock Text="{Binding SelectedEntry.RootFolderPath}"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               FontSize="12"
+                               TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="Open File"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding OpenExportFileCommand}"
+                            Margin="0,0,8,0"/>
+                    
+                    <Button Content="Open Folder"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Command="{Binding OpenExportFolderCommand}"
+                            Margin="0,0,8,0"/>
+                    
+                    <Button Content="Delete"
+                            Style="{StaticResource DangerButtonStyle}"
+                            Command="{Binding DeleteEntryCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        
+        <!-- History List -->
+        <Border Grid.Row="2" Style="{StaticResource CardStyle}">
+            <Grid>
+                <DataGrid ItemsSource="{Binding HistoryEntries}"
+                          SelectedItem="{Binding SelectedEntry}"
+                          Style="{StaticResource ModernDataGridStyle}"
+                          ColumnHeaderStyle="{StaticResource ModernDataGridColumnHeaderStyle}"
+                          CellStyle="{StaticResource ModernDataGridCellStyle}"
+                          Visibility="{Binding HasEntries, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date" 
+                                            Binding="{Binding FormattedTimestamp}" 
+                                            Width="140"/>
+                        <DataGridTextColumn Header="Folder" 
+                                            Binding="{Binding FolderName}" 
+                                            Width="*"/>
+                        <DataGridTextColumn Header="Files" 
+                                            Binding="{Binding TotalFilesProcessed}" 
+                                            Width="70"/>
+                        <DataGridTextColumn Header="Errors" 
+                                            Binding="{Binding FilesWithErrors}" 
+                                            Width="70"/>
+                        <DataGridTextColumn Header="Duration" 
+                                            Binding="{Binding FormattedDuration}" 
+                                            Width="80"/>
+                        <DataGridTextColumn Header="Format" 
+                                            Binding="{Binding ExportFormat}" 
+                                            Width="70"/>
+                        <DataGridTextColumn Header="Status" 
+                                            Binding="{Binding StatusDisplay}" 
+                                            Width="90"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                
+                <!-- Empty State -->
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Visibility="{Binding HasEntries, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                    <TextBlock Text="📋" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                    <TextBlock Text="No scan history yet"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Start a scan from the Scan Folder tab to see results here."
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               HorizontalAlignment="Center"
+                               Margin="0,8,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

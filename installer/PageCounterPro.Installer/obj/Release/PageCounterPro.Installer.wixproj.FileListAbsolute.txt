@@ -1,0 +1,6 @@
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\obj\Release\PageCounterPro.Installer.wixproj.CoreCompileInputs.cache
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\bin\Release\PageCounterPro.Installer.msi
+c:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\bin\Release\PageCounterPro.Installer.wixpdb
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\obj\Release\PageCounterPro.Installer.msi
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\obj\Release\PageCounterPro.Installer.wixpdb
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\obj\Release\PageCounterPro.Installer.wixproj.BindTracking-neutral.txt

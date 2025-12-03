@@ -1,0 +1,12 @@
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\bin\Release\net8.0-windows\PageCounterPro.Core.deps.json
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\bin\Release\net8.0-windows\PageCounterPro.Core.dll
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\bin\Release\net8.0-windows\PageCounterPro.Core.pdb
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\obj\Release\net8.0-windows\PageCounterPro.Core.csproj.AssemblyReference.cache
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\obj\Release\net8.0-windows\PageCounterPro.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\obj\Release\net8.0-windows\PageCounterPro.Core.AssemblyInfoInputs.cache
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\obj\Release\net8.0-windows\PageCounterPro.Core.AssemblyInfo.cs
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\obj\Release\net8.0-windows\PageCounterPro.Core.csproj.CoreCompileInputs.cache
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\obj\Release\net8.0-windows\PageCounterPro.Core.dll
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\obj\Release\net8.0-windows\refint\PageCounterPro.Core.dll
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\obj\Release\net8.0-windows\PageCounterPro.Core.pdb
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\obj\Release\net8.0-windows\ref\PageCounterPro.Core.dll

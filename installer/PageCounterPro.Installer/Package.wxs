@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  
+  <Package Name="PageCounter Pro"
+           Manufacturer="Badgey"
+           Version="1.0.0.0"
+           UpgradeCode="E4B7C8F1-2A3D-4E5F-9B7C-8D9E0F1A2B3C"
+           Scope="perMachine"
+           Language="1033"
+           Compressed="yes"
+           InstallerVersion="500">
+    
+    <SummaryInformation Description="PageCounter Pro - Document Page Counting Application"
+                        Manufacturer="Badgey" />
+    
+    <MediaTemplate EmbedCab="yes" />
+    
+    <!-- Upgrade handling -->
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed."
+                  AllowSameVersionUpgrades="yes" />
+    
+    <!-- Feature definition -->
+    <Feature Id="ProductFeature" Title="PageCounter Pro" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ProgramMenuDir" />
+      <ComponentRef Id="DesktopShortcut" />
+    </Feature>
+    
+    <!-- Standard WiX UI -->
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+    
+    <!-- License -->
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    
+  </Package>
+  
+  <!-- Directory structure -->
+  <Fragment>
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="ManufacturerFolder" Name="Badgey">
+        <Directory Id="INSTALLFOLDER" Name="PageCounter Pro" />
+      </Directory>
+    </StandardDirectory>
+    
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="PageCounter Pro" />
+    </StandardDirectory>
+    
+    <StandardDirectory Id="DesktopFolder" />
+  </Fragment>
+  
+  <!-- Components -->
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Files Include="$(var.PageCounterPro.UI.TargetDir)**">
+        <Exclude Files="$(var.PageCounterPro.UI.TargetDir)*.pdb" />
+      </Files>
+    </ComponentGroup>
+    
+    <!-- Start Menu shortcut -->
+    <Component Id="ProgramMenuDir" Directory="ApplicationProgramsFolder" Guid="A1B2C3D4-E5F6-7890-ABCD-EF1234567890">
+      <Shortcut Id="ApplicationStartMenuShortcut"
+                Name="PageCounter Pro"
+                Description="Document Page Counting Application"
+                Target="[INSTALLFOLDER]PageCounterPro.exe"
+                WorkingDirectory="INSTALLFOLDER"
+                Icon="AppIcon.ico" />
+      <RemoveFolder Id="CleanUpStartMenuDir" On="uninstall" />
+      <RegistryValue Root="HKCU"
+                     Key="Software\Badgey\PageCounterPro"
+                     Name="installed"
+                     Type="integer"
+                     Value="1"
+                     KeyPath="yes" />
+    </Component>
+    
+    <!-- Desktop shortcut -->
+    <Component Id="DesktopShortcut" Directory="DesktopFolder" Guid="B2C3D4E5-F6A7-8901-BCDE-F23456789012">
+      <Shortcut Id="ApplicationDesktopShortcut"
+                Name="PageCounter Pro"
+                Description="Document Page Counting Application"
+                Target="[INSTALLFOLDER]PageCounterPro.exe"
+                WorkingDirectory="INSTALLFOLDER"
+                Icon="AppIcon.ico" />
+      <RegistryValue Root="HKCU"
+                     Key="Software\Badgey\PageCounterPro"
+                     Name="desktopshortcut"
+                     Type="integer"
+                     Value="1"
+                     KeyPath="yes" />
+    </Component>
+    
+    <!-- Icon definition -->
+    <Icon Id="AppIcon.ico" SourceFile="..\..\assets\app.ico" />
+  </Fragment>
+  
+</Wix>
