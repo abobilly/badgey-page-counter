@@ -2,6 +2,7 @@ BuiltPdbOutput	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\
 BuiltTargetOutput	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\obj\Release\PageCounterPro.Installer.msi
 Input	..\..\assets\app.ico
 Input	C:\Users\andre\.nuget\packages\wixtoolset.ui.wixext\5.0.0\wixext5\WixToolset.UI.wixext.dll
+Input	C:\Users\andre\.nuget\packages\wixtoolset.util.wixext\5.0.0\wixext5\WixToolset.Util.wixext.dll
 Input	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.UI\bin\Release\net8.0-windows\app.ico
 Input	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.UI\bin\Release\net8.0-windows\ClosedXML.dll
 Input	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.UI\bin\Release\net8.0-windows\ClosedXML.Parser.dll
@@ -61,3 +62,4 @@ Intermediate	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\Pa
 Intermediate	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\obj\Release\WixToolset.UI.wixext_Iy0jyQ24KU9wBrmDY1xChE1MyPA\wix-ir\new.ico
 Intermediate	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\obj\Release\WixToolset.UI.wixext_Iy0jyQ24KU9wBrmDY1xChE1MyPA\wix-ir\uica.dll-1
 Intermediate	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\obj\Release\WixToolset.UI.wixext_Iy0jyQ24KU9wBrmDY1xChE1MyPA\wix-ir\up.ico
+Intermediate	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\obj\Release\WixToolset.Util.wixext_jDdd3vrcWufUTCRz8rUHBQGqdEA\wix-ir\utilca.dll-2

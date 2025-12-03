@@ -10,3 +10,4 @@ C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\o
 C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\obj\Release\net8.0-windows\refint\PageCounterPro.Core.dll
 C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\obj\Release\net8.0-windows\PageCounterPro.Core.pdb
 C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\obj\Release\net8.0-windows\ref\PageCounterPro.Core.dll
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Core\obj\Release\net8.0-windows\PageCounterPro.Core.sourcelink.json

@@ -48,6 +48,10 @@
             "WixToolset.UI.wixext": {
               "target": "Package",
               "version": "[5.0.0, )"
+            },
+            "WixToolset.Util.wixext": {
+              "target": "Package",
+              "version": "[5.0.0, )"
             }
           }
         }

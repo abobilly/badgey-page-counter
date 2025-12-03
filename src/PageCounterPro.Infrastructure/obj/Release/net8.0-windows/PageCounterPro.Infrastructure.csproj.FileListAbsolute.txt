@@ -13,3 +13,4 @@ C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infras
 C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\obj\Release\net8.0-windows\refint\PageCounterPro.Infrastructure.dll
 C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\obj\Release\net8.0-windows\PageCounterPro.Infrastructure.pdb
 C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\obj\Release\net8.0-windows\ref\PageCounterPro.Infrastructure.dll
+C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\src\PageCounterPro.Infrastructure\obj\Release\net8.0-windows\PageCounterPro.Infrastructure.sourcelink.json
