@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PageCounterPro.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8d3c0f843cff7c077c1b8b202bd89c5aaa6ba545")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d990ca569ffb389e6a03d2729f106535bb14c8c1")]
 [assembly: System.Reflection.AssemblyProductAttribute("PageCounterPro.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PageCounterPro.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
