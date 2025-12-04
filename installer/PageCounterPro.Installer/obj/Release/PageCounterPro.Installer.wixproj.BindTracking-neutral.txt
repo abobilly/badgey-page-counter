@@ -62,4 +62,4 @@ Intermediate	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\Pa
 Intermediate	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\obj\Release\WixToolset.UI.wixext_Iy0jyQ24KU9wBrmDY1xChE1MyPA\wix-ir\new.ico
 Intermediate	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\obj\Release\WixToolset.UI.wixext_Iy0jyQ24KU9wBrmDY1xChE1MyPA\wix-ir\uica.dll-1
 Intermediate	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\obj\Release\WixToolset.UI.wixext_Iy0jyQ24KU9wBrmDY1xChE1MyPA\wix-ir\up.ico
-Intermediate	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\obj\Release\WixToolset.Util.wixext_jDdd3vrcWufUTCRz8rUHBQGqdEA\wix-ir\utilca.dll-2
+Intermediate	C:\Users\andre\lawchuck\badgey.org\badgey-page-counter\installer\PageCounterPro.Installer\obj\Release\WixToolset.Util.wixext_jDdd3vrcWufUTCRz8rUHBQGqdEA\wix-ir\utilca.dll-1
