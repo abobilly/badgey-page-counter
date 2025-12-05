@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("A professional page counting application for Windows")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fc71ec9f83ab21eefca14e40b93930b2cab98042")]
 [assembly: System.Reflection.AssemblyProductAttribute("PageCounter Pro")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PageCounterPro")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
