@@ -11,7 +11,7 @@ public partial class FileTypeOptionsDialog : Window
     public FileTypeOptionsDialog()
     {
         InitializeComponent();
-        
+
         if (DataContext is FileTypeOptionsViewModel vm)
         {
             vm.CloseAction = () => Close();

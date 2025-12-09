@@ -88,7 +88,7 @@ public class PageCountServiceTests
         // Arrange - use a unique empty directory to avoid leftover files from other tests
         var emptyTestPath = Path.Combine(_testDataPath, $"EmptyDir_{Guid.NewGuid()}");
         Directory.CreateDirectory(emptyTestPath);
-        
+
         try
         {
             var options = new ScanOptions

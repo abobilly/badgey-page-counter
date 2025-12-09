@@ -241,7 +241,7 @@ public partial class SettingsViewModel : ObservableObject
                 var settings = _settingsService.GetSettings();
                 settings.FileTypePreferences.Clear();
                 await _settingsService.SaveSettingsAsync(settings);
-                
+
                 LoadFileTypePreferences(settings);
                 StatusMessage = "File type preferences cleared.";
                 _logger.LogInformation("File type preferences cleared");
