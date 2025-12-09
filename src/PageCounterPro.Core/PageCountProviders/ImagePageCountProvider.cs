@@ -39,12 +39,12 @@ public sealed class ImagePageCountProvider : IPageCountProvider
             }
 
             _logger.LogDebug("Image file {FileName} treated as 1 page", file.Name);
-            return PageCountResult.Successful(1, "OK – image treated as 1 page for printing");
+            return PageCountResult.Successful(1, string.Empty);
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Failed to process image {FileName}", file.Name);
-            return PageCountResult.Successful(1, $"Image treated as 1 page for printing; note: {ex.Message}");
+            return PageCountResult.Successful(1, string.Empty);
         }
     }
 

@@ -34,6 +34,38 @@ public sealed class AppSettings
     /// Whether to include subfolders by default.
     /// </summary>
     public bool DefaultIncludeSubfolders { get; set; } = true;
+
+    /// <summary>
+    /// User preferences for file types (how to handle unknown/special file types).
+    /// Key is the lowercase file extension without dot (e.g., "avi", "mov").
+    /// </summary>
+    public Dictionary<string, FileTypePreference> FileTypePreferences { get; set; } = new();
+}
+
+/// <summary>
+/// User preference for how to handle a specific file type.
+/// </summary>
+public sealed class FileTypePreference
+{
+    /// <summary>
+    /// Whether to count this file type as 1 page.
+    /// </summary>
+    public bool CountAs1Page { get; set; } = true;
+
+    /// <summary>
+    /// Whether to show duration for video files (if available).
+    /// </summary>
+    public bool ShowDuration { get; set; } = true;
+
+    /// <summary>
+    /// Whether this preference has been configured by the user.
+    /// </summary>
+    public bool IsConfigured { get; set; }
+
+    /// <summary>
+    /// The category of this file type (e.g., "Video", "Image", "Unknown").
+    /// </summary>
+    public string Category { get; set; } = "Unknown";
 }
 
 /// <summary>

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:PageCounterPro.UI.Views"
+             xmlns:converters="clr-namespace:PageCounterPro.UI.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800"
              Background="{StaticResource BackgroundBrush}">
@@ -11,11 +12,13 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
     </UserControl.Resources>
     
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid Margin="24">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -174,7 +177,7 @@
             </Border>
             
             <!-- Default Scan Options -->
-            <Border Grid.Row="4" Style="{StaticResource CardStyle}" Margin="0,0,0,24">
+            <Border Grid.Row="4" Style="{StaticResource CardStyle}" Margin="0,0,0,16">
                 <StackPanel>
                     <TextBlock Text="Default Scan Options" 
                                Style="{StaticResource SubheaderLabelStyle}"
@@ -186,8 +189,79 @@
                 </StackPanel>
             </Border>
             
+            <!-- File Type Preferences -->
+            <Border Grid.Row="5" Style="{StaticResource CardStyle}" Margin="0,0,0,24">
+                <StackPanel>
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="File Type Preferences" 
+                                       Style="{StaticResource SubheaderLabelStyle}"/>
+                            <TextBlock Text="Saved preferences for how to handle different file types."
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+                        
+                        <Button Grid.Column="1"
+                                Content="Clear All"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Command="{Binding ClearFileTypePreferencesCommand}"
+                                VerticalAlignment="Top"
+                                Visibility="{Binding HasFileTypePreferences, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    </Grid>
+                    
+                    <!-- List of saved preferences -->
+                    <ItemsControl ItemsSource="{Binding FileTypePreferencesList}" 
+                                  Visibility="{Binding HasFileTypePreferences, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource BackgroundBrush}" 
+                                        CornerRadius="6" 
+                                        Padding="12,8"
+                                        Margin="0,0,0,4">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                            <TextBlock Text="." FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                            <TextBlock Text="{Binding Extension}" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+                                        
+                                        <TextBlock Grid.Column="1" 
+                                                   Text="{Binding Category}" 
+                                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                                   VerticalAlignment="Center"/>
+                                        
+                                        <TextBlock Grid.Column="2" 
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource TextSecondaryBrush}">
+                                            <Run Text="Count as"/>
+                                            <Run Text="{Binding PageCountText, Mode=OneWay}" FontWeight="SemiBold"/>
+                                        </TextBlock>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    
+                    <!-- Empty state -->
+                    <TextBlock Text="No file type preferences saved yet. They will appear here after you scan folders containing unknown file types."
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               FontStyle="Italic"
+                               Visibility="{Binding HasFileTypePreferences, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                </StackPanel>
+            </Border>
+            
             <!-- Save/Reset Buttons -->
-            <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,8,0,0">
+            <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,8,0,0">
                 <Button Content="Save Settings"
                         Style="{StaticResource PrimaryButtonStyle}"
                         Command="{Binding SaveSettingsCommand}"

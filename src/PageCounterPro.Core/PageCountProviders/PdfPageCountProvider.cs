@@ -34,12 +34,12 @@ public sealed class PdfPageCountProvider : IPageCountProvider
 
             _logger.LogDebug("PDF {FileName} has {PageCount} pages", file.Name, pageCount);
 
-            return PageCountResult.Successful(pageCount, "OK – PDF pages from library");
+            return PageCountResult.Successful(pageCount, string.Empty);
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Failed to read PDF {FileName}", file.Name);
-            return PageCountResult.Failed($"Error: failed to read PDF; exception: {ex.Message}");
+            return PageCountResult.Failed("Failed to read PDF");
         }
     }
 }

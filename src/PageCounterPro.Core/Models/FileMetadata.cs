@@ -33,15 +33,15 @@ public sealed class FileMetadata
     /// <summary>
     /// The number of pages, or null if unknown.
     /// </summary>
-    public int? PageCount { get; init; }
+    public int? PageCount { get; set; }
 
     /// <summary>
     /// Additional notes (errors, metadata, etc.).
     /// </summary>
-    public string Notes { get; init; } = string.Empty;
+    public string Notes { get; set; } = string.Empty;
 
     /// <summary>
     /// Whether this file was processed successfully.
     /// </summary>
-    public bool ProcessedSuccessfully { get; init; }
+    public bool ProcessedSuccessfully { get; set; }
 }

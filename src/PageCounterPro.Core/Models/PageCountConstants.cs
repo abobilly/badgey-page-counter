@@ -49,7 +49,7 @@ public static class PageCountConstants
     /// <summary>
     /// Supported image extensions.
     /// </summary>
-    public static readonly IReadOnlyList<string> ImageExtensions = new[] { "jpg", "jpeg", "png", "gif", "bmp", "tif", "tiff", "webp", "ico" };
+    public static readonly IReadOnlyList<string> ImageExtensions = new[] { "jpg", "jpeg", "png", "gif", "bmp", "tif", "tiff", "webp", "ico", "heic", "heif" };
 
     /// <summary>
     /// Supported video extensions.

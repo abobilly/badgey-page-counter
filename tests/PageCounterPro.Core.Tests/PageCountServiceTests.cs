@@ -85,25 +85,39 @@ public class PageCountServiceTests
     [Fact]
     public async Task ExecuteScanAsync_ReturnsValidResult()
     {
-        // Arrange
-        var options = new ScanOptions
+        // Arrange - use a unique empty directory to avoid leftover files from other tests
+        var emptyTestPath = Path.Combine(_testDataPath, $"EmptyDir_{Guid.NewGuid()}");
+        Directory.CreateDirectory(emptyTestPath);
+        
+        try
         {
-            RootFolderPath = _testDataPath,
-            IncludeSubfolders = false
-        };
+            var options = new ScanOptions
+            {
+                RootFolderPath = emptyTestPath,
+                IncludeSubfolders = false
+            };
 
-        _mockFileScanner.Setup(s => s.GetTotalFileCountAsync(options, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(0);
-        _mockFileScanner.Setup(s => s.ScanFilesAsync(options, It.IsAny<IProgress<ScanProgress>>(), It.IsAny<CancellationToken>()))
-            .Returns(GetEmptyAsyncEnumerable());
+            _mockFileScanner.Setup(s => s.GetTotalFileCountAsync(options, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(0);
+            _mockFileScanner.Setup(s => s.ScanFilesAsync(options, It.IsAny<IProgress<ScanProgress>>(), It.IsAny<CancellationToken>()))
+                .Returns(GetEmptyAsyncEnumerable());
 
-        // Act
-        var result = await _service.ExecuteScanAsync(options);
+            // Act
+            var result = await _service.ExecuteScanAsync(options);
 
-        // Assert
-        result.Should().NotBeNull();
-        result.Files.Should().BeEmpty();
-        result.TotalFilesFound.Should().Be(0);
+            // Assert
+            result.Should().NotBeNull();
+            result.Files.Should().BeEmpty();
+            result.TotalFilesFound.Should().Be(0);
+        }
+        finally
+        {
+            // Cleanup
+            if (Directory.Exists(emptyTestPath))
+            {
+                Directory.Delete(emptyTestPath, true);
+            }
+        }
     }
 
     private static async IAsyncEnumerable<FileInfo> GetEmptyAsyncEnumerable()

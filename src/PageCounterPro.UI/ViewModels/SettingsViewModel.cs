@@ -4,9 +4,20 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using PageCounterPro.Core.Models;
 using PageCounterPro.Infrastructure.Interfaces;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace PageCounterPro.UI.ViewModels;
+
+/// <summary>
+/// Display item for file type preferences in settings UI.
+/// </summary>
+public sealed class FileTypePreferenceDisplayItem
+{
+    public required string Extension { get; init; }
+    public required string Category { get; init; }
+    public required string PageCountText { get; init; }
+}
 
 /// <summary>
 /// View model for the settings view.
@@ -41,6 +52,11 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string? _statusMessage;
 
+    [ObservableProperty]
+    private bool _hasFileTypePreferences;
+
+    public ObservableCollection<FileTypePreferenceDisplayItem> FileTypePreferencesList { get; } = new();
+
     public IReadOnlyList<ExportFormat> ExportFormats { get; } = Enum.GetValues<ExportFormat>();
 
     public SettingsViewModel(
@@ -66,8 +82,30 @@ public partial class SettingsViewModel : ObservableObject
         LinesPerPage = settings.LinesPerPage;
         DefaultIncludeSubfolders = settings.DefaultIncludeSubfolders;
 
+        LoadFileTypePreferences(settings);
+
         HasUnsavedChanges = false;
         StatusMessage = null;
+    }
+
+    private void LoadFileTypePreferences(AppSettings settings)
+    {
+        FileTypePreferencesList.Clear();
+
+        foreach (var kvp in settings.FileTypePreferences.OrderBy(x => x.Value.Category).ThenBy(x => x.Key))
+        {
+            var pref = kvp.Value;
+            var pageCountText = pref.CountAs1Page ? "1 page" : "Skip";
+
+            FileTypePreferencesList.Add(new FileTypePreferenceDisplayItem
+            {
+                Extension = $".{kvp.Key}",
+                Category = pref.Category,
+                PageCountText = pageCountText
+            });
+        }
+
+        HasFileTypePreferences = FileTypePreferencesList.Count > 0;
     }
 
     partial void OnExportFormatChanged(ExportFormat value) => MarkAsChanged();
@@ -129,6 +167,9 @@ public partial class SettingsViewModel : ObservableObject
                 LinesPerPage = 10;
             }
 
+            // Get current settings to preserve FileTypePreferences
+            var currentSettings = _settingsService.GetSettings();
+
             var settings = new AppSettings
             {
                 ExportFormat = ExportFormat,
@@ -136,7 +177,8 @@ public partial class SettingsViewModel : ObservableObject
                 MaxParallelism = MaxParallelism,
                 CharactersPerPage = CharactersPerPage,
                 LinesPerPage = LinesPerPage,
-                DefaultIncludeSubfolders = DefaultIncludeSubfolders
+                DefaultIncludeSubfolders = DefaultIncludeSubfolders,
+                FileTypePreferences = currentSettings.FileTypePreferences
             };
 
             await _settingsService.SaveSettingsAsync(settings);
@@ -179,6 +221,35 @@ public partial class SettingsViewModel : ObservableObject
             {
                 _logger.LogError(ex, "Failed to reset settings");
                 StatusMessage = $"Failed to reset settings: {ex.Message}";
+            }
+        }
+    }
+
+    [RelayCommand]
+    private async Task ClearFileTypePreferencesAsync()
+    {
+        var result = MessageBox.Show(
+            "Are you sure you want to clear all file type preferences?\n\nYou'll be asked again when scanning files with these extensions.",
+            "Clear File Type Preferences",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+
+        if (result == MessageBoxResult.Yes)
+        {
+            try
+            {
+                var settings = _settingsService.GetSettings();
+                settings.FileTypePreferences.Clear();
+                await _settingsService.SaveSettingsAsync(settings);
+                
+                LoadFileTypePreferences(settings);
+                StatusMessage = "File type preferences cleared.";
+                _logger.LogInformation("File type preferences cleared");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to clear file type preferences");
+                StatusMessage = $"Failed to clear preferences: {ex.Message}";
             }
         }
     }

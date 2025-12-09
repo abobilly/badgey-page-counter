@@ -5,6 +5,7 @@ using Microsoft.Win32;
 using PageCounterPro.Core.Interfaces;
 using PageCounterPro.Core.Models;
 using PageCounterPro.Infrastructure.Interfaces;
+using PageCounterPro.UI.Views;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -191,8 +192,11 @@ public partial class ScanViewModel : ObservableObject
             }
             else
             {
-                // Export results
+                // Check for unsupported/unconfigured file types and show dialog if needed
                 var settings = _settingsService.GetSettings();
+                result = await HandleUnconfiguredFileTypesAsync(result, settings);
+
+                // Export results
                 var exportPath = await _exportService.ExportAsync(result, settings.ExportFormat, settings.CustomExportDirectory);
                 result.ExportFilePath = exportPath;
                 LastExportPath = exportPath;
@@ -302,12 +306,121 @@ public partial class ScanViewModel : ObservableObject
                     FileName = file.FileName,
                     FileType = file.FileType.ToUpperInvariant(),
                     PageCount = file.PageCount?.ToString() ?? "-",
-                    Status = file.ProcessedSuccessfully ? "✓" : "✗"
+                    Status = file.ProcessedSuccessfully ? "✓" : "✗",
+                    Notes = file.Notes
                 });
             }
 
             FolderGroups.Add(folderGroup);
         });
+    }
+
+    /// <summary>
+    /// Checks for unsupported/unconfigured file types and shows dialog if any are found.
+    /// Returns updated ScanResult with user preferences applied.
+    /// </summary>
+    private async Task<ScanResult> HandleUnconfiguredFileTypesAsync(ScanResult result, AppSettings settings)
+    {
+        // Find all unsupported files (those without page count and not configured)
+        var unsupportedFiles = result.Files
+            .Where(f => !f.ProcessedSuccessfully && f.Notes?.Contains("Unsupported") == true)
+            .GroupBy(f => f.FileType.ToLowerInvariant())
+            .ToDictionary(
+                g => g.Key,
+                g => (Category: GetFileTypeCategory(g.Key), FileCount: g.Count(), MetadataReadable: true)
+            );
+
+        if (unsupportedFiles.Count == 0)
+        {
+            return result;
+        }
+
+        // Check which extensions are not yet configured
+        var unconfiguredExtensions = unsupportedFiles
+            .Where(kvp => !settings.FileTypePreferences.TryGetValue(kvp.Key, out var pref) || !pref.IsConfigured)
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+        if (unconfiguredExtensions.Count > 0)
+        {
+            // Show dialog on UI thread
+            var dialogResult = await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                var vm = new FileTypeOptionsViewModel();
+                vm.PopulateFromScan(unconfiguredExtensions, settings.FileTypePreferences);
+
+                var dialog = new FileTypeOptionsDialog(vm)
+                {
+                    Owner = Application.Current.MainWindow
+                };
+                dialog.ShowDialog();
+
+                return vm.DialogResult ? vm.GetPreferences() : null;
+            });
+
+            if (dialogResult != null)
+            {
+                // Save user preferences
+                foreach (var kvp in dialogResult)
+                {
+                    settings.FileTypePreferences[kvp.Key] = kvp.Value;
+                }
+                await _settingsService.SaveSettingsAsync(settings);
+                _logger.LogInformation("Saved file type preferences for {Count} extensions", dialogResult.Count);
+            }
+        }
+
+        // Apply preferences to update results
+        return ApplyFileTypePreferences(result, settings);
+    }
+
+    /// <summary>
+    /// Applies user file type preferences to update scan results.
+    /// </summary>
+    private ScanResult ApplyFileTypePreferences(ScanResult result, AppSettings settings)
+    {
+        foreach (var file in result.Files)
+        {
+            if (!file.ProcessedSuccessfully && file.Notes?.Contains("Unsupported") == true)
+            {
+                var ext = file.FileType.ToLowerInvariant();
+                if (settings.FileTypePreferences.TryGetValue(ext, out var pref) && pref.IsConfigured)
+                {
+                    if (pref.CountAs1Page)
+                    {
+                        // Update the file metadata to count as 1 page
+                        file.PageCount = 1;
+                        file.ProcessedSuccessfully = true;
+                        file.Notes = string.Empty;
+                    }
+                    else
+                    {
+                        // Keep as 0 pages but mark as processed
+                        file.PageCount = 0;
+                        file.ProcessedSuccessfully = true;
+                        file.Notes = "Excluded from count";
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Determines the category for a file extension.
+    /// </summary>
+    private static string GetFileTypeCategory(string extension)
+    {
+        var videoExtensions = new HashSet<string> { "mov", "mp4", "avi", "wmv", "mkv", "flv", "webm", "m4v", "3gp" };
+        var imageExtensions = new HashSet<string> { "jpg", "jpeg", "png", "gif", "bmp", "tif", "tiff", "webp", "ico", "heic", "heif", "raw", "svg" };
+        var audioExtensions = new HashSet<string> { "mp3", "wav", "flac", "aac", "ogg", "wma", "m4a" };
+        var documentExtensions = new HashSet<string> { "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "rtf" };
+
+        if (videoExtensions.Contains(extension)) return "Video";
+        if (imageExtensions.Contains(extension)) return "Image";
+        if (audioExtensions.Contains(extension)) return "Audio";
+        if (documentExtensions.Contains(extension)) return "Document";
+        return "Unknown";
     }
 }
 
@@ -381,4 +494,7 @@ public partial class RecentFileViewModel : ObservableObject
 
     [ObservableProperty]
     private string _status = string.Empty;
+
+    [ObservableProperty]
+    private string _notes = string.Empty;
 }

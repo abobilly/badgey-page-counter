@@ -81,7 +81,7 @@ public class ImagePageCountProviderTests
         // Assert
         result.Success.Should().BeTrue();
         result.PageCount.Should().Be(1);
-        result.Notes.Should().Contain("1 page");
+        result.Notes.Should().BeEmpty(); // Images now have no verbose notes
 
         // Cleanup
         File.Delete(filePath);
