@@ -26,10 +26,12 @@ public partial class ScanViewModel : ObservableObject
     private readonly ILogger<ScanViewModel> _logger;
 
     private CancellationTokenSource? _cancellationTokenSource;
+    private ScanResult? _currentScanResult;
 
     // Accent colors for folder groups
     private static readonly string[] FolderAccentColors =
     {
+        "#0047AB", // Cobalt (primary)
         "#0EA5E9", // Teal/cyan
         "#22C55E", // Green
         "#8B5CF6", // Purple
@@ -37,8 +39,7 @@ public partial class ScanViewModel : ObservableObject
         "#F97316", // Orange
         "#F59E0B", // Amber/gold
         "#EF4444", // Red
-        "#2563EB", // Secondary blue
-        "#1D4ED8"  // Primary blue (last since closest to app accent)
+        "#003380"  // Cobalt dark
     };
 
     [ObservableProperty]
@@ -273,8 +274,101 @@ public partial class ScanViewModel : ObservableObject
         }
     }
 
+    [RelayCommand(CanExecute = nameof(CanReExport))]
+    private async Task ReExportAsync()
+    {
+        if (_currentScanResult == null || string.IsNullOrEmpty(LastExportPath))
+        {
+            return;
+        }
+
+        try
+        {
+            IsScanning = true;
+            StatusMessage = "Re-exporting with updated page counts...";
+
+            var updatedResult = BuildScanResultFromViewState();
+            var settings = _settingsService.GetSettings();
+
+            // Get the directory and use it as output path (will overwrite)
+            var outputDir = Path.GetDirectoryName(LastExportPath);
+            await _exportService.ExportAsync(updatedResult, settings.ExportFormat, outputDir);
+
+            StatusMessage = "Re-export completed!";
+            _logger.LogInformation("Re-export completed to {Path}", LastExportPath);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Re-export failed");
+            StatusMessage = $"Re-export failed: {ex.Message}";
+            MessageBox.Show(
+                $"Re-export failed:\n\n{ex.Message}",
+                "Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
+        finally
+        {
+            IsScanning = false;
+        }
+    }
+
+    private bool CanReExport() => _currentScanResult != null && !string.IsNullOrEmpty(LastExportPath) && !IsScanning;
+
+    /// <summary>
+    /// Builds a ScanResult from the current ViewModel state, using EffectivePageCount values.
+    /// </summary>
+    private ScanResult BuildScanResultFromViewState()
+    {
+        if (_currentScanResult == null)
+        {
+            throw new InvalidOperationException("No scan result available");
+        }
+
+        // Create a new result with updated file metadata
+        var result = new ScanResult
+        {
+            RootFolderPath = _currentScanResult.RootFolderPath,
+            StartTime = _currentScanResult.StartTime,
+            EndTime = _currentScanResult.EndTime,
+            TotalFilesFound = _currentScanResult.TotalFilesFound,
+            FilesProcessed = _currentScanResult.FilesProcessed,
+            FilesWithErrors = _currentScanResult.FilesWithErrors,
+            WasCancelled = _currentScanResult.WasCancelled,
+            IsComplete = _currentScanResult.IsComplete,
+            ExportFilePath = _currentScanResult.ExportFilePath
+        };
+
+        // Build file list from current ViewModel state
+        foreach (var folderGroup in FolderGroups)
+        {
+            foreach (var fileVm in folderGroup.Files)
+            {
+                result.Files.Add(new FileMetadata
+                {
+                    FullPath = fileVm.FullPath,
+                    RootPath = fileVm.RootPath,
+                    FileName = fileVm.FileName,
+                    FileType = fileVm.FileType.ToLowerInvariant(),
+                    FileSizeBytes = fileVm.FileSizeBytes,
+                    PageCount = fileVm.EffectivePageCount,
+                    ProcessedSuccessfully = fileVm.Status == "✓",
+                    Notes = fileVm.Notes
+                });
+            }
+        }
+
+        return result;
+    }
+
     private void UpdateRecentFiles(ScanResult result)
     {
+        // Store for re-export
+        _currentScanResult = result;
+
+        // Define editable file type categories (images, videos, audio - files that count as 1 page)
+        var editableCategories = new HashSet<string> { "Image", "Video", "Audio" };
+
         Application.Current.Dispatcher.Invoke(() =>
         {
             FolderGroups.Clear();
@@ -294,79 +388,104 @@ public partial class ScanViewModel : ObservableObject
                 FolderPath = result.RootFolderPath,
                 AccentColor = accentColor,
                 FileCount = result.Files.Count,
-                TotalPages = result.Files.Sum(f => f.PageCount ?? 0),
                 IsExpanded = false, // Collapsed by default
                 ExportPath = result.ExportFilePath
             };
 
             foreach (var file in result.Files)
             {
-                folderGroup.Files.Add(new RecentFileViewModel
+                var category = GetFileTypeCategory(file.FileType.ToLowerInvariant());
+                var isEditable = editableCategories.Contains(category);
+
+                var fileVm = new RecentFileViewModel
                 {
                     FileName = file.FileName,
                     FileType = file.FileType.ToUpperInvariant(),
                     PageCount = file.PageCount?.ToString() ?? "-",
                     Status = file.ProcessedSuccessfully ? "✓" : "✗",
-                    Notes = file.Notes
-                });
+                    Notes = file.Notes ?? string.Empty,
+                    FullPath = file.FullPath,
+                    RootPath = file.RootPath,
+                    FileSizeBytes = file.FileSizeBytes,
+                    OriginalPageCount = file.PageCount,
+                    IsEditable = isEditable,
+                    CountAsOnePage = file.PageCount > 0 // Default to current state
+                };
+
+                folderGroup.AddFile(fileVm);
             }
+
+            // Calculate initial total from effective page counts
+            folderGroup.RecalculateTotalPages();
 
             FolderGroups.Add(folderGroup);
         });
     }
 
     /// <summary>
-    /// Checks for unsupported/unconfigured file types and shows dialog if any are found.
+    /// Checks for unconfigured file types and shows dialog if any are found.
+    /// Shows dialog for both unsupported files AND "count as 1 page" types (images, videos, audio).
     /// Returns updated ScanResult with user preferences applied.
     /// </summary>
     private async Task<ScanResult> HandleUnconfiguredFileTypesAsync(ScanResult result, AppSettings settings)
     {
-        // Find all unsupported files (those without page count and not configured)
-        var unsupportedFiles = result.Files
-            .Where(f => !f.ProcessedSuccessfully && f.Notes?.Contains("Unsupported") == true)
+        // Categories that should prompt for configuration (these are "count as 1 page" types)
+        var configurableCategories = new HashSet<string> { "Image", "Video", "Audio" };
+
+        // Find all files that need configuration:
+        // 1. Unsupported files (marked as such)
+        // 2. Files in configurable categories (Image, Video, Audio) that haven't been configured yet
+        var filesToConfigure = result.Files
+            .Where(f =>
+            {
+                var ext = f.FileType.ToLowerInvariant();
+                var category = GetFileTypeCategory(ext);
+
+                // Check if this extension is already configured
+                var isConfigured = settings.FileTypePreferences.TryGetValue(ext, out var pref) && pref.IsConfigured;
+                if (isConfigured) return false;
+
+                // Include if unsupported OR in a configurable category
+                var isUnsupported = !f.ProcessedSuccessfully && f.Notes?.Contains("Unsupported") == true;
+                var isConfigurableCategory = configurableCategories.Contains(category);
+
+                return isUnsupported || isConfigurableCategory;
+            })
             .GroupBy(f => f.FileType.ToLowerInvariant())
             .ToDictionary(
                 g => g.Key,
                 g => (Category: GetFileTypeCategory(g.Key), FileCount: g.Count(), MetadataReadable: true)
             );
 
-        if (unsupportedFiles.Count == 0)
+        if (filesToConfigure.Count == 0)
         {
             return result;
         }
 
-        // Check which extensions are not yet configured
-        var unconfiguredExtensions = unsupportedFiles
-            .Where(kvp => !settings.FileTypePreferences.TryGetValue(kvp.Key, out var pref) || !pref.IsConfigured)
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-        if (unconfiguredExtensions.Count > 0)
+        // Show dialog on UI thread
+        var dialogResult = await Application.Current.Dispatcher.InvokeAsync(() =>
         {
-            // Show dialog on UI thread
-            var dialogResult = await Application.Current.Dispatcher.InvokeAsync(() =>
+            var vm = new FileTypeOptionsViewModel();
+            vm.PopulateFromScan(filesToConfigure, settings.FileTypePreferences);
+
+            var dialog = new FileTypeOptionsDialog(vm)
             {
-                var vm = new FileTypeOptionsViewModel();
-                vm.PopulateFromScan(unconfiguredExtensions, settings.FileTypePreferences);
+                Owner = Application.Current.MainWindow
+            };
+            dialog.ShowDialog();
 
-                var dialog = new FileTypeOptionsDialog(vm)
-                {
-                    Owner = Application.Current.MainWindow
-                };
-                dialog.ShowDialog();
+            return vm.DialogResult ? vm.GetPreferences() : null;
+        });
 
-                return vm.DialogResult ? vm.GetPreferences() : null;
-            });
-
-            if (dialogResult != null)
+        if (dialogResult != null)
+        {
+            // Save user preferences
+            foreach (var kvp in dialogResult)
             {
-                // Save user preferences
-                foreach (var kvp in dialogResult)
-                {
-                    settings.FileTypePreferences[kvp.Key] = kvp.Value;
-                }
-                await _settingsService.SaveSettingsAsync(settings);
-                _logger.LogInformation("Saved file type preferences for {Count} extensions", dialogResult.Count);
+                settings.FileTypePreferences[kvp.Key] = kvp.Value;
             }
+            await _settingsService.SaveSettingsAsync(settings);
+            _logger.LogInformation("Saved file type preferences for {Count} extensions", dialogResult.Count);
         }
 
         // Apply preferences to update results
@@ -378,11 +497,17 @@ public partial class ScanViewModel : ObservableObject
     /// </summary>
     private ScanResult ApplyFileTypePreferences(ScanResult result, AppSettings settings)
     {
+        // Categories that can be toggled
+        var configurableCategories = new HashSet<string> { "Image", "Video", "Audio" };
+
         foreach (var file in result.Files)
         {
-            if (!file.ProcessedSuccessfully && file.Notes?.Contains("Unsupported") == true)
+            var ext = file.FileType.ToLowerInvariant();
+            var category = GetFileTypeCategory(ext);
+
+            // Apply preferences to configurable file types
+            if (configurableCategories.Contains(category) || (!file.ProcessedSuccessfully && file.Notes?.Contains("Unsupported") == true))
             {
-                var ext = file.FileType.ToLowerInvariant();
                 if (settings.FileTypePreferences.TryGetValue(ext, out var pref) && pref.IsConfigured)
                 {
                     if (pref.CountAs1Page)
@@ -455,6 +580,32 @@ public partial class FolderGroupViewModel : ObservableObject
 
     public Brush AccentBrush => new SolidColorBrush((Color)ColorConverter.ConvertFromString(AccentColor));
 
+    /// <summary>
+    /// Adds a file to the folder group and subscribes to its property changes.
+    /// </summary>
+    public void AddFile(RecentFileViewModel file)
+    {
+        file.PropertyChanged += OnFilePropertyChanged;
+        Files.Add(file);
+    }
+
+    /// <summary>
+    /// Recalculates total pages from all files' effective page counts.
+    /// </summary>
+    public void RecalculateTotalPages()
+    {
+        TotalPages = Files.Sum(f => f.EffectivePageCount);
+    }
+
+    private void OnFilePropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(RecentFileViewModel.EffectivePageCount) ||
+            e.PropertyName == nameof(RecentFileViewModel.CountAsOnePage))
+        {
+            RecalculateTotalPages();
+        }
+    }
+
     [RelayCommand]
     private void OpenFolder()
     {
@@ -497,4 +648,39 @@ public partial class RecentFileViewModel : ObservableObject
 
     [ObservableProperty]
     private string _notes = string.Empty;
+
+    // Properties for per-file page count toggle and re-export
+    [ObservableProperty]
+    private string _fullPath = string.Empty;
+
+    [ObservableProperty]
+    private string _rootPath = string.Empty;
+
+    [ObservableProperty]
+    private long _fileSizeBytes;
+
+    [ObservableProperty]
+    private int? _originalPageCount;
+
+    [ObservableProperty]
+    private bool _countAsOnePage = true;
+
+    [ObservableProperty]
+    private bool _isEditable;
+
+    /// <summary>
+    /// Gets the effective page count based on toggle state.
+    /// If editable and toggled on: 1 page. If toggled off: 0 pages.
+    /// If not editable: original page count.
+    /// </summary>
+    public int EffectivePageCount => IsEditable
+        ? (CountAsOnePage ? 1 : 0)
+        : (OriginalPageCount ?? 0);
+
+    partial void OnCountAsOnePageChanged(bool value)
+    {
+        OnPropertyChanged(nameof(EffectivePageCount));
+        // Update the displayed page count
+        PageCount = EffectivePageCount.ToString();
+    }
 }

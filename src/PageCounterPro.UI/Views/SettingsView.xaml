@@ -1,20 +1,21 @@
 <UserControl x:Class="PageCounterPro.UI.Views.SettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:PageCounterPro.UI.Views"
              xmlns:converters="clr-namespace:PageCounterPro.UI.Converters"
-             mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800"
+             mc:Ignorable="d"
+             d:DesignHeight="600"
+        d:DesignWidth="800"
              Background="{StaticResource BackgroundBrush}">
-    
+
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
     </UserControl.Resources>
-    
+
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid Margin="24">
             <Grid.RowDefinitions>
@@ -24,23 +25,28 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            
+
             <!-- Header -->
-            <StackPanel Grid.Row="0" Margin="0,0,0,24">
-                <TextBlock Text="Settings" Style="{StaticResource HeaderLabelStyle}"/>
+            <StackPanel Grid.Row="0"
+                    Margin="0,0,0,24">
+                <TextBlock Text="Settings"
+                        Style="{StaticResource HeaderLabelStyle}"/>
                 <TextBlock Text="Configure application preferences and export options."
                            Style="{StaticResource BodyLabelStyle}"
                            Margin="0,4,0,0"/>
             </StackPanel>
-            
+
             <!-- Export Settings -->
-            <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+            <Border Grid.Row="1"
+                    Style="{StaticResource CardStyle}"
+                    Margin="0,0,0,16">
                 <StackPanel>
-                    <TextBlock Text="Export Settings" 
+                    <TextBlock Text="Export Settings"
                                Style="{StaticResource SubheaderLabelStyle}"
                                Margin="0,0,0,16"/>
-                    
+
                     <!-- Export Format -->
                     <StackPanel Margin="0,0,0,16">
                         <TextBlock Text="Export Format"
@@ -52,31 +58,31 @@
                                   Width="200"
                                   HorizontalAlignment="Left"/>
                     </StackPanel>
-                    
+
                     <!-- Custom Export Directory -->
                     <StackPanel Margin="0,0,0,0">
                         <TextBlock Text="Export Directory"
                                    FontWeight="SemiBold"
                                    Margin="0,0,0,8"/>
-                        
+
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            
+
                             <TextBox Grid.Column="0"
                                      Text="{Binding CustomExportDirectory, TargetNullValue='(Default: AppData\\PageCounterPro\\Exports)'}"
                                      Style="{StaticResource ModernTextBoxStyle}"
                                      IsReadOnly="True"/>
-                            
+
                             <Button Grid.Column="1"
                                     Content="Browse..."
                                     Style="{StaticResource SecondaryButtonStyle}"
                                     Command="{Binding BrowseExportDirectoryCommand}"
                                     Margin="8,0,0,0"/>
-                            
+
                             <Button Grid.Column="2"
                                     Content="Reset"
                                     Style="{StaticResource SecondaryButtonStyle}"
@@ -87,14 +93,16 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
-            
+
             <!-- Performance Settings -->
-            <Border Grid.Row="2" Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+            <Border Grid.Row="2"
+                    Style="{StaticResource CardStyle}"
+                    Margin="0,0,0,16">
                 <StackPanel>
-                    <TextBlock Text="Performance" 
+                    <TextBlock Text="Performance"
                                Style="{StaticResource SubheaderLabelStyle}"
                                Margin="0,0,0,16"/>
-                    
+
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200"/>
@@ -103,8 +111,9 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        
-                        <StackPanel Grid.Row="0" Grid.Column="0">
+
+                        <StackPanel Grid.Row="0"
+                                Grid.Column="0">
                             <TextBlock Text="Max Parallelism"
                                        FontWeight="SemiBold"
                                        Margin="0,0,0,8"/>
@@ -113,8 +122,9 @@
                                      Width="80"
                                      HorizontalAlignment="Left"/>
                         </StackPanel>
-                        
-                        <TextBlock Grid.Row="0" Grid.Column="1"
+
+                        <TextBlock Grid.Row="0"
+                                Grid.Column="1"
                                    Text="Number of files to process in parallel. Higher values may improve performance but use more system resources."
                                    Foreground="{StaticResource TextSecondaryBrush}"
                                    TextWrapping="Wrap"
@@ -123,19 +133,21 @@
                     </Grid>
                 </StackPanel>
             </Border>
-            
+
             <!-- Page Count Estimation Settings -->
-            <Border Grid.Row="3" Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+            <Border Grid.Row="3"
+                    Style="{StaticResource CardStyle}"
+                    Margin="0,0,0,16">
                 <StackPanel>
-                    <TextBlock Text="Page Estimation" 
+                    <TextBlock Text="Page Estimation"
                                Style="{StaticResource SubheaderLabelStyle}"
                                Margin="0,0,0,16"/>
-                    
+
                     <TextBlock Text="These settings affect how pages are estimated for text files and other documents without embedded page counts."
                                Foreground="{StaticResource TextSecondaryBrush}"
                                TextWrapping="Wrap"
                                Margin="0,0,0,16"/>
-                    
+
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200"/>
@@ -144,8 +156,9 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        
-                        <StackPanel Grid.Column="0" Margin="0,0,16,0">
+
+                        <StackPanel Grid.Column="0"
+                                Margin="0,0,16,0">
                             <TextBlock Text="Characters per Page"
                                        FontWeight="SemiBold"
                                        Margin="0,0,0,8"/>
@@ -158,7 +171,7 @@
                                        FontSize="11"
                                        Margin="0,4,0,0"/>
                         </StackPanel>
-                        
+
                         <StackPanel Grid.Column="1">
                             <TextBlock Text="Lines per Page"
                                        FontWeight="SemiBold"
@@ -175,37 +188,41 @@
                     </Grid>
                 </StackPanel>
             </Border>
-            
+
             <!-- Default Scan Options -->
-            <Border Grid.Row="4" Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+            <Border Grid.Row="4"
+                    Style="{StaticResource CardStyle}"
+                    Margin="0,0,0,16">
                 <StackPanel>
-                    <TextBlock Text="Default Scan Options" 
+                    <TextBlock Text="Default Scan Options"
                                Style="{StaticResource SubheaderLabelStyle}"
                                Margin="0,0,0,16"/>
-                    
+
                     <CheckBox Content="Include subfolders by default"
                               IsChecked="{Binding DefaultIncludeSubfolders}"
                               Style="{StaticResource ModernCheckBoxStyle}"/>
                 </StackPanel>
             </Border>
-            
+
             <!-- File Type Preferences -->
-            <Border Grid.Row="5" Style="{StaticResource CardStyle}" Margin="0,0,0,24">
+            <Border Grid.Row="5"
+                    Style="{StaticResource CardStyle}"
+                    Margin="0,0,0,24">
                 <StackPanel>
                     <Grid Margin="0,0,0,16">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        
+
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="File Type Preferences" 
+                            <TextBlock Text="File Type Preferences"
                                        Style="{StaticResource SubheaderLabelStyle}"/>
                             <TextBlock Text="Saved preferences for how to handle different file types."
                                        Foreground="{StaticResource TextSecondaryBrush}"
                                        Margin="0,4,0,0"/>
                         </StackPanel>
-                        
+
                         <Button Grid.Column="1"
                                 Content="Clear All"
                                 Style="{StaticResource SecondaryButtonStyle}"
@@ -213,14 +230,14 @@
                                 VerticalAlignment="Top"
                                 Visibility="{Binding HasFileTypePreferences, Converter={StaticResource BoolToVisibilityConverter}}"/>
                     </Grid>
-                    
+
                     <!-- List of saved preferences -->
-                    <ItemsControl ItemsSource="{Binding FileTypePreferencesList}" 
+                    <ItemsControl ItemsSource="{Binding FileTypePreferencesList}"
                                   Visibility="{Binding HasFileTypePreferences, Converter={StaticResource BoolToVisibilityConverter}}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Background="{StaticResource BackgroundBrush}" 
-                                        CornerRadius="6" 
+                                <Border Background="{StaticResource BackgroundBrush}"
+                                        CornerRadius="6"
                                         Padding="12,8"
                                         Margin="0,0,0,4">
                                     <Grid>
@@ -229,29 +246,35 @@
                                             <ColumnDefinition Width="100"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        
-                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                            <TextBlock Text="." FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
-                                            <TextBlock Text="{Binding Extension}" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+
+                                        <StackPanel Grid.Column="0"
+                                                Orientation="Horizontal">
+                                            <TextBlock Text="."
+                                                    FontWeight="Bold"
+                                                    Foreground="{StaticResource TextPrimaryBrush}"/>
+                                            <TextBlock Text="{Binding Extension}"
+                                                    FontWeight="Bold"
+                                                    Foreground="{StaticResource TextPrimaryBrush}"/>
                                         </StackPanel>
-                                        
-                                        <TextBlock Grid.Column="1" 
-                                                   Text="{Binding Category}" 
+
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding Category}"
                                                    Foreground="{StaticResource TextSecondaryBrush}"
                                                    VerticalAlignment="Center"/>
-                                        
-                                        <TextBlock Grid.Column="2" 
+
+                                        <TextBlock Grid.Column="2"
                                                    VerticalAlignment="Center"
                                                    Foreground="{StaticResource TextSecondaryBrush}">
                                             <Run Text="Count as"/>
-                                            <Run Text="{Binding PageCountText, Mode=OneWay}" FontWeight="SemiBold"/>
+                                            <Run Text="{Binding PageCountText, Mode=OneWay}"
+                                                    FontWeight="SemiBold"/>
                                         </TextBlock>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    
+
                     <!-- Empty state -->
                     <TextBlock Text="No file type preferences saved yet. They will appear here after you scan folders containing unknown file types."
                                Foreground="{StaticResource TextSecondaryBrush}"
@@ -259,25 +282,28 @@
                                Visibility="{Binding HasFileTypePreferences, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                 </StackPanel>
             </Border>
-            
+
             <!-- Save/Reset Buttons -->
-            <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,8,0,0">
+            <StackPanel Grid.Row="6"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    Margin="0,8,0,0">
                 <Button Content="Save Settings"
                         Style="{StaticResource PrimaryButtonStyle}"
                         Command="{Binding SaveSettingsCommand}"
                         Width="140"/>
-                
+
                 <Button Content="Discard Changes"
                         Style="{StaticResource SecondaryButtonStyle}"
                         Command="{Binding DiscardChangesCommand}"
                         Visibility="{Binding HasUnsavedChanges, Converter={StaticResource BoolToVisibilityConverter}}"
                         Margin="12,0,0,0"/>
-                
+
                 <Button Content="Reset to Defaults"
                         Style="{StaticResource SecondaryButtonStyle}"
                         Command="{Binding ResetToDefaultsCommand}"
                         Margin="12,0,0,0"/>
-                
+
                 <TextBlock Text="{Binding StatusMessage}"
                            VerticalAlignment="Center"
                            Foreground="{StaticResource SuccessBrush}"
